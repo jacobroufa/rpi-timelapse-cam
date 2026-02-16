@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** Capture images reliably on a configurable interval and make them easy to browse and turn into timelapse videos -- all self-contained on a Raspberry Pi.
-**Current focus:** Phase 1: Capture Daemon & Storage Management
+**Current focus:** Phase 2: Web UI & Timeline Browser
 
 ## Current Position
 
@@ -68,5 +68,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: All phase 1 plans complete, running verification
-Resume file: .planning/phases/01-capture-daemon-storage-management/
+Stopped at: Phase 2 context gathered
+Resume file: .planning/phases/02-web-ui-timeline-browser/02-CONTEXT.md
