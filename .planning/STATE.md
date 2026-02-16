@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 1 of 3 (Capture Daemon & Storage Management)
-Plan: 0 of ? in current phase
-Status: Context gathered, ready to plan
-Last activity: 2026-02-16 -- Phase 1 context gathered
+Plan: 0 of 3 in current phase
+Status: Planned, ready to execute
+Last activity: 2026-02-16 -- Phase 1 planned (3 plans, 2 waves)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -55,5 +55,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-capture-daemon-storage-management/01-CONTEXT.md
+Stopped at: Phase 1 planned, ready to execute
+Resume file: .planning/phases/01-capture-daemon-storage-management/
