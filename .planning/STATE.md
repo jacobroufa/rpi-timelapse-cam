@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 1 of 3 (Capture Daemon & Storage Management)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-02-16 -- Completed 01-01-PLAN.md (Config & Storage Foundation)
+Last activity: 2026-02-16 -- Completed 01-02-PLAN.md (Camera Abstraction Layer)
 
-Progress: [###░░░░░░░] 11%
+Progress: [######░░░░] 22%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 2min
-- Total execution time: 0.03 hours
+- Total plans completed: 2
+- Average duration: 3min
+- Total execution time: 0.08 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-capture-daemon-storage-management | 1/3 | 2min | 2min |
+| 01-capture-daemon-storage-management | 2/3 | 5min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min)
-- Trend: baseline
+- Last 5 plans: 01-01 (2min), 01-02 (3min)
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -46,6 +46,10 @@ Recent decisions affecting current work:
 - Deep merge allows partial user configs -- only override what you need
 - Cleanup walks sorted directories so oldest days are processed first
 - Output dir writability verified via touch/unlink test file
+- Used capture_image() + PIL save for picamera2 JPEG quality (capture_file has no quality param)
+- Lazy imports for picamera2 and cv2 so modules are importable on any machine
+- Threaded timeout via daemon thread with join(timeout) for capture hang protection
+- camera_lock yields None (not the file object) for cleaner context manager API
 
 ### Pending Todos
 
@@ -58,5 +62,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 01-01-PLAN.md
+Stopped at: Completed 01-02-PLAN.md
 Resume file: .planning/phases/01-capture-daemon-storage-management/
