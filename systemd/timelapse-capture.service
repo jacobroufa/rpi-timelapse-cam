@@ -1,0 +1,35 @@
+# Timelapse Capture Daemon - systemd service unit
+#
+# Paths assume default Pi user and project location.
+# Edit ExecStart and --config paths for your setup.
+
+[Unit]
+Description=Timelapse Capture Daemon
+# Pi has no RTC -- must wait for NTP sync to get correct timestamps
+After=time-sync.target
+Wants=time-sync.target
+
+[Service]
+Type=simple
+# Non-root user, but video group grants camera hardware access
+User=pi
+Group=video
+ExecStart=/home/pi/rpi-timelapse-cam/venv/bin/python -m timelapse --config /home/pi/timelapse-config.yml
+# Enables: systemctl reload timelapse-capture (sends SIGHUP for config reload)
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+# Max 5 restarts in 5 minutes to prevent restart storms
+StartLimitBurst=5
+StartLimitIntervalSec=300
+# Ensure Python output reaches journal immediately
+Environment=PYTHONUNBUFFERED=1
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=timelapse-capture
+# Resource limits for constrained Pi hardware
+MemoryMax=256M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target
