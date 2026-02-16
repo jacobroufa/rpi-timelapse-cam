@@ -12,7 +12,7 @@ Three phases that each deliver one of the three independent components: capture 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Capture Daemon & Storage Management** - Camera abstraction, interval capture, disk monitoring, cleanup, and systemd service
+- [x] **Phase 1: Capture Daemon & Storage Management** - Camera abstraction, interval capture, disk monitoring, cleanup, and systemd service (completed 2026-02-16)
 - [ ] **Phase 2: Web UI & Timeline Browser** - Flask server with live view, timeline browsing, disk warnings, and capture control
 - [ ] **Phase 3: Timelapse Generation** - Standalone FFmpeg script that compresses date ranges into configurable-duration videos
 
@@ -71,6 +71,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Capture Daemon & Storage Management | 0/3 | Planned | - |
+| 1. Capture Daemon & Storage Management | 0/3 | Complete    | 2026-02-16 |
 | 2. Web UI & Timeline Browser | 0/? | Not started | - |
 | 3. Timelapse Generation | 0/? | Not started | - |
