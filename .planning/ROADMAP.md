@@ -28,11 +28,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Daemon checks available disk space before each capture and refuses to write when storage is critically full
   4. When auto-cleanup is enabled, images older than the configured threshold are automatically deleted
   5. Daemon runs as a systemd service that starts on boot, restarts on crash, and recovers gracefully from camera disconnects
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- Project scaffolding, YAML config module, storage manager, and day-based cleanup
+- [ ] 01-02-PLAN.md -- Camera abstraction layer: Pi Camera and USB backends, auto-detection, timeout, lock file
+- [ ] 01-03-PLAN.md -- Capture daemon loop, CLI entry point, status reporting, systemd service, setup script
 
 ### Phase 2: Web UI & Timeline Browser
 **Goal**: Users can browse captured images, see a live camera feed, and monitor system health from any device on the local network
@@ -70,6 +71,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Capture Daemon & Storage Management | 0/? | Not started | - |
+| 1. Capture Daemon & Storage Management | 0/3 | Planned | - |
 | 2. Web UI & Timeline Browser | 0/? | Not started | - |
 | 3. Timelapse Generation | 0/? | Not started | - |
