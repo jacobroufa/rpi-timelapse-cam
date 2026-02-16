@@ -1,0 +1,47 @@
+# Timelapse Camera Configuration
+# ================================
+# Uncomment and modify settings below. Defaults are shown.
+# All settings are optional -- defaults apply when omitted.
+
+# Capture settings
+# capture:
+#   # Seconds between captures (default: 60)
+#   interval: 60
+#
+#   # Camera source: "auto" | "picamera" | "usb" (default: "auto")
+#   # auto = try Pi Camera first, fall back to USB webcam
+#   source: "auto"
+#
+#   # JPEG compression quality, 1-100 (default: 85)
+#   # Higher = better quality, larger files
+#   jpeg_quality: 85
+#
+#   # Capture resolution as [width, height] (default: [1920, 1080])
+#   # Images are downscaled if camera provides higher resolution
+#   resolution: [1920, 1080]
+
+# Storage settings
+# storage:
+#   # Directory for captured images (default: ~/timelapse-images)
+#   # Supports ~ for home directory expansion
+#   # For production installs, consider: /var/lib/timelapse
+#   output_dir: "~/timelapse-images"
+#
+#   # Hard stop: refuse to capture above this disk usage % (default: 90)
+#   stop_threshold: 90
+#
+#   # Warning: log a warning above this disk usage % (default: 85)
+#   warn_threshold: 85
+#
+#   # Auto-cleanup of old images (default: false)
+#   # When enabled, deletes oldest full day directories past retention period
+#   cleanup_enabled: false
+#
+#   # Days to retain images when cleanup is enabled (default: 30)
+#   retention_days: 30
+
+# Logging settings
+# logging:
+#   # Track and log missed/failed captures (default: false)
+#   # When false, failed captures are skipped silently
+#   gap_tracking: false
