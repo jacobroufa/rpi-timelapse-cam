@@ -1,7 +1,7 @@
 # Requirements: RPi Timelapse Cam
 
 **Defined:** 2026-02-16
-**Core Value:** Capture images reliably on a configurable interval and make them easy to browse and turn into timelapse videos — all self-contained on a Raspberry Pi.
+**Core Value:** Capture images reliably on a configurable interval and make them easy to browse and turn into timelapse videos -- all self-contained on a Raspberry Pi.
 
 ## v1 Requirements
 
@@ -82,39 +82,39 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CAP-01 | TBD | Pending |
-| CAP-02 | TBD | Pending |
-| CAP-03 | TBD | Pending |
-| CAP-04 | TBD | Pending |
-| CAP-05 | TBD | Pending |
-| CAP-06 | TBD | Pending |
-| CAP-07 | TBD | Pending |
-| CAP-08 | TBD | Pending |
-| CAP-09 | TBD | Pending |
-| CAP-10 | TBD | Pending |
-| WEB-01 | TBD | Pending |
-| WEB-02 | TBD | Pending |
-| WEB-03 | TBD | Pending |
-| WEB-04 | TBD | Pending |
-| WEB-05 | TBD | Pending |
-| WEB-06 | TBD | Pending |
-| WEB-07 | TBD | Pending |
-| WEB-08 | TBD | Pending |
-| WEB-09 | TBD | Pending |
-| TL-01 | TBD | Pending |
-| TL-02 | TBD | Pending |
-| TL-03 | TBD | Pending |
-| TL-04 | TBD | Pending |
-| TL-05 | TBD | Pending |
-| STR-01 | TBD | Pending |
-| STR-02 | TBD | Pending |
-| STR-03 | TBD | Pending |
+| CAP-01 | Phase 1 | Pending |
+| CAP-02 | Phase 1 | Pending |
+| CAP-03 | Phase 1 | Pending |
+| CAP-04 | Phase 1 | Pending |
+| CAP-05 | Phase 1 | Pending |
+| CAP-06 | Phase 1 | Pending |
+| CAP-07 | Phase 1 | Pending |
+| CAP-08 | Phase 1 | Pending |
+| CAP-09 | Phase 1 | Pending |
+| CAP-10 | Phase 1 | Pending |
+| WEB-01 | Phase 2 | Pending |
+| WEB-02 | Phase 2 | Pending |
+| WEB-03 | Phase 2 | Pending |
+| WEB-04 | Phase 2 | Pending |
+| WEB-05 | Phase 2 | Pending |
+| WEB-06 | Phase 2 | Pending |
+| WEB-07 | Phase 2 | Pending |
+| WEB-08 | Phase 2 | Pending |
+| WEB-09 | Phase 2 | Pending |
+| TL-01 | Phase 3 | Pending |
+| TL-02 | Phase 3 | Pending |
+| TL-03 | Phase 3 | Pending |
+| TL-04 | Phase 3 | Pending |
+| TL-05 | Phase 3 | Pending |
+| STR-01 | Phase 1 | Pending |
+| STR-02 | Phase 1 | Pending |
+| STR-03 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 27 total
-- Mapped to phases: 0
-- Unmapped: 27
+- Mapped to phases: 27
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-16*
-*Last updated: 2026-02-16 after initial definition*
+*Last updated: 2026-02-16 after roadmap creation*
