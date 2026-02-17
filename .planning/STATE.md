@@ -9,28 +9,29 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 
 ## Current Position
 
-Phase: 1 of 3 (Capture Daemon & Storage Management)
-Plan: 3 of 3 in current phase
-Status: All plans complete, awaiting verification
-Last activity: 2026-02-16 -- Completed 01-03-PLAN.md (Capture Daemon, CLI & systemd)
+Phase: 2 of 3 (Web UI & Timeline Browser)
+Plan: 1 of 5 in current phase
+Status: Plan 02-01 complete, continuing phase
+Last activity: 2026-02-17 -- Completed 02-01-PLAN.md (Thumbnail Generation)
 
-Progress: [##########] 33%
+Progress: [#############] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 3min
-- Total execution time: 0.15 hours
+- Total execution time: 0.18 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-capture-daemon-storage-management | 3/3 | 10min | 3min |
+| 02-web-ui-timeline-browser | 1/5 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min), 01-02 (3min), 01-03 (5min)
+- Last 5 plans: 01-01 (2min), 01-02 (3min), 01-03 (5min), 02-01 (2min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -56,6 +57,9 @@ Recent decisions affecting current work:
 - SIGHUP reloads interval/quality/thresholds but NOT source/resolution/output_dir
 - Config fallback: --config > /etc/timelapse/ > ./config/
 - Setup script does NOT auto-enable systemd service
+- Thumbnails generated at capture time for fast timeline browsing
+- Thumbnail failures wrapped in try/except to never crash daemon
+- Backfill CLI uses sorted rglob to process images in date order
 
 ### Pending Todos
 
@@ -67,6 +71,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-16
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-web-ui-timeline-browser/02-CONTEXT.md
+Last session: 2026-02-17
+Stopped at: Completed 02-01-PLAN.md
+Resume file: .planning/phases/02-web-ui-timeline-browser/02-01-SUMMARY.md
