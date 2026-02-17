@@ -65,10 +65,17 @@ Recent decisions affecting current work:
 - Health indicators use hover popups for rich detail display
 - Web config defaults: port 8080, host 0.0.0.0
 - Context processor injects health dict into all templates
+- Reverse directory walk (sorted reverse=True) for newest-first JPEG discovery
+- Always render img element (hidden) so JS refresh works when images appear
+- Flask built-in server for systemd service -- adequate for single-user Pi LAN
+- Web service lower resource limits (128M/25%) vs capture daemon (256M/50%)
+- Sudoers drop-in limits passwordless sudo to exactly three systemctl commands
 - HTTP Basic Auth against PAM for control tab -- browser caches credentials per session
 - Full /usr/bin/systemctl path in subprocess calls to match sudoers config
 - Dedicated Start/Stop buttons with confirm() on Stop only
 - 5-second polling interval for control tab status updates
+- [Phase 02]: Server-side initial render with client-side day switching via JSON API fetch
+- [Phase 02]: On-demand thumbnail generation fallback for pre-backfill images
 
 ### Pending Todos
 
