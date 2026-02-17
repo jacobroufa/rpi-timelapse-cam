@@ -24,6 +24,7 @@ camera = [
 
 [project.scripts]
 timelapse = "timelapse.__main__:main"
+timelapse-generate = "timelapse.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
