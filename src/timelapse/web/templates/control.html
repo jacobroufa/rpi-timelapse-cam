@@ -3,6 +3,118 @@
 {% block title %}Control{% endblock %}
 
 {% block content %}
-<h2>Control</h2>
-<p>Control panel coming soon...</p>
+<hgroup>
+    <h2>Control Panel</h2>
+    <p>Logged in as <strong>{{ user }}</strong></p>
+</hgroup>
+
+<section class="daemon-control">
+    <h3>Capture Daemon</h3>
+    <div class="control-row">
+        <span class="service-status-label">Status:</span>
+        <span id="service-status" class="service-status {{ service_status }}">{{ service_status | capitalize }}</span>
+        <span id="action-message" class="action-message"></span>
+    </div>
+    <div class="control-buttons">
+        <button id="start-btn" class="start-btn" {% if service_status == 'active' %}disabled{% endif %}>Start</button>
+        <button id="stop-btn" class="stop-btn" {% if service_status != 'active' %}disabled{% endif %}>Stop</button>
+    </div>
+</section>
+
+<section class="system-health">
+    <h3>System Health</h3>
+
+    <div class="health-grid">
+        <article class="health-card">
+            <header>Disk Storage</header>
+            <div class="health-card-body">
+                <div class="disk-bar-container">
+                    <div id="disk-bar" class="disk-bar {% if health.disk_warning %}warning{% endif %}"
+                         style="width: {{ health.disk_usage_percent if health.disk_usage_percent >= 0 else 0 }}%">
+                    </div>
+                </div>
+                <span id="disk-pct" class="disk-pct {% if health.disk_warning %}warning{% endif %}">
+                    {{ health.disk_usage_percent }}%
+                </span>
+                <dl>
+                    <dt>Total</dt>
+                    <dd id="disk-total">{{ system_info.disk_total_gb }} GB</dd>
+                    <dt>Used</dt>
+                    <dd id="disk-used">{{ system_info.disk_used_gb }} GB</dd>
+                    <dt>Free</dt>
+                    <dd id="disk-free">{{ system_info.disk_free_gb }} GB</dd>
+                </dl>
+            </div>
+        </article>
+
+        <article class="health-card">
+            <header>Capture Stats</header>
+            <div class="health-card-body">
+                <dl>
+                    <dt>Daemon State</dt>
+                    <dd id="daemon-state" class="{{ health.daemon_state }}">{{ health.daemon_state | capitalize }}</dd>
+                    <dt>Last Capture</dt>
+                    <dd id="last-capture">{{ health.last_capture or 'Never' }}</dd>
+                    <dt>Captures Today</dt>
+                    <dd id="captures-today">{{ health.captures_today }}</dd>
+                    {% if health.consecutive_failures > 0 %}
+                    <dt>Consecutive Failures</dt>
+                    <dd id="consecutive-failures" class="failure-highlight">{{ health.consecutive_failures }}</dd>
+                    {% else %}
+                    <dt>Consecutive Failures</dt>
+                    <dd id="consecutive-failures">0</dd>
+                    {% endif %}
+                    <dt>Camera</dt>
+                    <dd id="camera-type">{{ health.camera | capitalize }}</dd>
+                </dl>
+            </div>
+        </article>
+
+        <article class="health-card">
+            <header>System Info</header>
+            <div class="health-card-body">
+                <dl>
+                    <dt>System Uptime</dt>
+                    <dd id="system-uptime">{{ system_info.system_uptime }}</dd>
+                    <dt>Daemon Uptime</dt>
+                    <dd id="daemon-uptime">{{ health.uptime_seconds }}s</dd>
+                    <dt>Config File</dt>
+                    <dd id="config-loaded">{{ health.config_loaded }}</dd>
+                </dl>
+            </div>
+        </article>
+
+        <article class="health-card">
+            <header>Configuration</header>
+            <div class="health-card-body">
+                <dl>
+                    <dt>Capture Interval</dt>
+                    <dd>{{ config_summary.interval }}s</dd>
+                    <dt>JPEG Quality</dt>
+                    <dd>{{ config_summary.quality }}</dd>
+                    <dt>Camera Source</dt>
+                    <dd>{{ config_summary.source }}</dd>
+                    <dt>Output Directory</dt>
+                    <dd>{{ config_summary.output_dir }}</dd>
+                    <dt>Disk Warning</dt>
+                    <dd>{{ config_summary.warn_threshold }}%</dd>
+                    <dt>Disk Stop</dt>
+                    <dd>{{ config_summary.stop_threshold }}%</dd>
+                    <dt>Cleanup</dt>
+                    <dd>
+                        {% if config_summary.cleanup_enabled %}
+                        Enabled ({{ config_summary.retention_days }} days)
+                        {% else %}
+                        Disabled
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/control.js') }}"></script>
 {% endblock %}

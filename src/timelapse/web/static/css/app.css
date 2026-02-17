@@ -109,7 +109,22 @@
     font-weight: 600;
 }
 
-/* ── Filmstrip (placeholder for Plan 03) ────────────────────── */
+/* ── Timeline Header ───────────────────────────────────────── */
+
+.timeline-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-header input[type="date"] {
+    width: auto;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* ── Filmstrip ─────────────────────────────────────────────── */
 
 .filmstrip {
     display: flex;
@@ -227,5 +242,185 @@ body > main.container {
 /* Tab active refinement: Pico handles aria-current, but ensure
    the active tab has a clear visual distinction */
 nav a[aria-current="page"] {
+    font-weight: 600;
+}
+
+/* ── Control Tab ──────────────────────────────────────────── */
+
+.daemon-control {
+    margin-bottom: 2rem;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.service-status-label {
+    font-weight: 600;
+    color: var(--pico-muted-color);
+}
+
+.service-status {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.service-status.active {
+    color: #2ecc40;
+}
+
+.service-status.inactive {
+    color: #ff4136;
+}
+
+.service-status.failed {
+    color: #ff851b;
+}
+
+.service-status.unknown {
+    color: var(--pico-muted-color);
+}
+
+.action-message {
+    font-size: 0.85rem;
+    color: var(--pico-muted-color);
+    font-style: italic;
+}
+
+.action-message.error {
+    color: #ff4136;
+    font-style: normal;
+    font-weight: 600;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.start-btn {
+    --pico-background-color: #2ecc40;
+    --pico-border-color: #27ae60;
+    --pico-color: #fff;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+}
+
+.start-btn:hover:not(:disabled) {
+    --pico-background-color: #27ae60;
+}
+
+.stop-btn {
+    --pico-background-color: #ff4136;
+    --pico-border-color: #e74c3c;
+    --pico-color: #fff;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+}
+
+.stop-btn:hover:not(:disabled) {
+    --pico-background-color: #e74c3c;
+}
+
+/* ── System Health Grid ───────────────────────────────────── */
+
+.system-health {
+    margin-top: 2rem;
+}
+
+.health-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .health-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.health-card {
+    margin-bottom: 0;
+}
+
+.health-card header {
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+.health-card-body dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 0.75rem;
+    font-size: 0.85rem;
+}
+
+.health-card-body dt {
+    color: var(--pico-muted-color);
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.health-card-body dd {
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+/* Disk usage bar */
+.disk-bar-container {
+    width: 100%;
+    height: 10px;
+    background: var(--pico-muted-border-color);
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+}
+
+.disk-bar {
+    height: 100%;
+    background: #2ecc40;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+.disk-bar.warning {
+    background: #ff851b;
+}
+
+.disk-pct {
+    display: block;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.disk-pct.warning {
+    color: #e65100;
+}
+
+/* State color classes for inline text */
+.running,
+.active {
+    color: #2ecc40;
+}
+
+.stopped,
+.inactive {
+    color: var(--pico-muted-color);
+}
+
+.error,
+.failed {
+    color: #ff4136;
+}
+
+.failure-highlight {
+    color: #ff4136;
     font-weight: 600;
 }
