@@ -3,6 +3,45 @@
 {% block title %}Timeline{% endblock %}
 
 {% block content %}
-<h2>Timeline</h2>
-<p>Timeline view coming soon...</p>
+{% if images %}
+<div class="timeline-header">
+    <input type="date"
+           id="date-picker"
+           value="{{ selected_date }}"
+           {% if dates %}min="{{ dates[0] }}" max="{{ dates[-1] }}"{% endif %}>
+</div>
+
+<div id="filmstrip" class="filmstrip" tabindex="0">
+    {% for img in images %}
+    <img class="thumb{% if loop.index0 == 0 %} selected{% endif %}"
+         src="{{ img.thumb_url }}"
+         data-full-url="{{ img.full_url }}"
+         data-index="{{ loop.index0 }}"
+         data-time="{{ img.time }}"
+         loading="lazy"
+         alt="Capture at {{ img.time }}">
+    {% endfor %}
+</div>
+
+<div id="main-image-container" class="main-image-container">
+    <img id="main-image" src="{{ images[0].full_url }}" alt="Selected capture">
+    <span id="image-timestamp" class="image-timestamp">{{ images[0].time }}</span>
+</div>
+
+<div id="day-nav" class="day-nav">
+    <span id="current-date-display">{{ selected_date }}</span>
+    <span class="nav-hints">Arrow keys: navigate | Up/Down: change day | D: date picker</span>
+</div>
+
+<div id="timeline-data" data-current-date="{{ selected_date }}" style="display: none;"></div>
+{% else %}
+<div class="no-images-message">
+    <h3>No images captured yet.</h3>
+    <p>Start the capture daemon to begin collecting timelapse images.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/timeline.js') }}"></script>
 {% endblock %}
