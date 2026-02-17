@@ -78,7 +78,7 @@ else
 fi
 
 # Install Python dependencies inside venv
-"$VENV_DIR/bin/pip" install --quiet pyyaml
+"$VENV_DIR/bin/pip" install --quiet pyyaml flask pillow python-pam flask-httpauth
 echo "  Python dependencies installed"
 echo ""
 
@@ -108,10 +108,45 @@ echo ""
 # Install systemd service unit
 # ----------------------------------------------------------
 
-echo "Installing systemd service..."
+echo "Installing systemd services..."
 sudo cp "$PROJECT_DIR/systemd/timelapse-capture.service" /etc/systemd/system/
+sudo cp "$PROJECT_DIR/systemd/timelapse-web.service" /etc/systemd/system/
 sudo systemctl daemon-reload
-echo "  Service installed and daemon reloaded"
+echo "  Services installed and daemon reloaded"
+echo ""
+
+# ----------------------------------------------------------
+# Create sudoers drop-in for web UI daemon control
+# ----------------------------------------------------------
+# The web UI needs passwordless sudo for exactly three systemctl
+# commands to start/stop/check the capture daemon.
+
+echo "Setting up sudoers for web UI..."
+SUDOERS_FILE="/etc/sudoers.d/timelapse-web"
+SUDOERS_CONTENT="pi ALL=(root) NOPASSWD: /usr/bin/systemctl start timelapse-capture
+pi ALL=(root) NOPASSWD: /usr/bin/systemctl stop timelapse-capture
+pi ALL=(root) NOPASSWD: /usr/bin/systemctl is-active timelapse-capture"
+
+echo "$SUDOERS_CONTENT" | sudo tee "$SUDOERS_FILE" > /dev/null
+sudo chmod 0440 "$SUDOERS_FILE"
+
+# Validate sudoers syntax
+if sudo visudo -cf "$SUDOERS_FILE"; then
+    echo "  Sudoers file created and validated"
+else
+    echo "ERROR: Sudoers file has syntax errors, removing it"
+    sudo rm -f "$SUDOERS_FILE"
+    exit 1
+fi
+echo ""
+
+# ----------------------------------------------------------
+# Add shadow group for PAM authentication
+# ----------------------------------------------------------
+
+echo "Setting up PAM authentication..."
+sudo usermod -aG shadow pi
+echo "  Added pi user to shadow group for PAM auth"
 echo ""
 
 # ----------------------------------------------------------
@@ -125,14 +160,23 @@ echo ""
 echo "  Config file:    $CONFIG_DEST"
 echo "  Output dir:     $OUTPUT_DIR"
 echo "  Venv:           $VENV_DIR"
-echo "  Service:        timelapse-capture.service"
+echo "  Services:       timelapse-capture.service, timelapse-web.service"
+echo "  Sudoers:        /etc/sudoers.d/timelapse-web"
 echo ""
 echo "  Next steps:"
 echo "    1. Edit your config:  nano $CONFIG_DEST"
+echo ""
+echo "  Capture daemon:"
 echo "    2. Start the daemon:  sudo systemctl start timelapse-capture"
 echo "    3. Enable on boot:    sudo systemctl enable timelapse-capture"
 echo "    4. View logs:         journalctl -u timelapse-capture -f"
 echo "    5. Reload config:     sudo systemctl reload timelapse-capture"
+echo ""
+echo "  Web UI:"
+echo "    6. Start the web UI:  sudo systemctl start timelapse-web"
+echo "    7. Enable on boot:    sudo systemctl enable timelapse-web"
+echo "    8. View logs:         journalctl -u timelapse-web -f"
+echo "    9. Open in browser:   http://<pi-ip>:8080"
 echo ""
 echo "  For production installs, consider using /var/lib/timelapse"
 echo "  as the output directory instead of ~/timelapse-images."

@@ -1,0 +1,36 @@
+# Timelapse Web UI - systemd service unit
+#
+# Serves the Flask web UI on port 8080.
+# Paths assume default Pi user and project location.
+# Edit ExecStart and WorkingDirectory for your setup.
+
+[Unit]
+Description=Timelapse Web UI
+# Start after network and capture daemon (so status file exists)
+After=network.target timelapse-capture.service
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+# Use Flask's built-in server -- adequate for single-user local network
+# For production at scale, use gunicorn, but Flask's server handles the Pi use case
+ExecStart=/home/pi/rpi-timelapse-cam/venv/bin/python -m flask --app timelapse.web run --host 0.0.0.0 --port 8080
+# Working directory must contain the src/ package
+WorkingDirectory=/home/pi/rpi-timelapse-cam
+Restart=on-failure
+RestartSec=5
+# Max 5 restarts in 5 minutes to prevent restart storms
+StartLimitBurst=5
+StartLimitIntervalSec=300
+# Ensure Python output reaches journal immediately; set Flask app target
+Environment=PYTHONUNBUFFERED=1 FLASK_APP=timelapse.web
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=timelapse-web
+# Less memory than capture daemon -- web serving is lighter
+MemoryMax=128M
+CPUQuota=25%
+
+[Install]
+WantedBy=multi-user.target
