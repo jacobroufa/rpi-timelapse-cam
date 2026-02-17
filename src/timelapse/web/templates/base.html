@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Timelapse{% endblock %} - RPi Timelapse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><strong>RPi Timelapse</strong></li>
+            </ul>
+            <ul>
+                <li>
+                    <a href="{{ url_for('timeline.index') }}"
+                       {% if request.blueprint == 'timeline' %}aria-current="page"{% endif %}>
+                        Timeline
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('latest.index') }}"
+                       {% if request.blueprint == 'latest' %}aria-current="page"{% endif %}>
+                        Latest Image
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('control.index') }}"
+                       {% if request.blueprint == 'control' %}aria-current="page"{% endif %}>
+                        Control
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="health-bar">
+            <span class="health-item {% if health.disk_warning %}warning{% endif %}">
+                <span class="health-dot {% if health.disk_warning %}warning{% endif %}"></span>
+                Disk {{ health.disk_usage_percent }}%
+                <span class="health-popup">
+                    <strong>Disk Usage</strong><br>
+                    Used: {{ health.disk_usage_percent }}%<br>
+                    Free: {{ health.disk_free_gb }} GB<br>
+                    {% if health.disk_warning %}
+                    <span class="popup-warning">Warning: Low disk space</span>
+                    {% endif %}
+                </span>
+            </span>
+
+            <span class="health-item {{ health.daemon_state }}">
+                <span class="health-dot {{ health.daemon_state }}"></span>
+                {{ health.daemon_state | capitalize }}
+                <span class="health-popup">
+                    <strong>Daemon Status</strong><br>
+                    State: {{ health.daemon_state | capitalize }}<br>
+                    Last capture: {{ health.last_capture or 'never' }}<br>
+                    Captures today: {{ health.captures_today }}<br>
+                    Camera: {{ health.camera }}<br>
+                    Interval: {{ health.capture_interval }}s
+                    {% if health.consecutive_failures > 0 %}
+                    <br><span class="popup-warning">Failures: {{ health.consecutive_failures }}</span>
+                    {% endif %}
+                </span>
+            </span>
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

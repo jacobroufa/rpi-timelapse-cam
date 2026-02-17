@@ -1,0 +1,181 @@
+/* RPi Timelapse - Custom Styles
+   Extends Pico CSS with health indicators, filmstrip, and tab refinements.
+*/
+
+/* ── Health Bar ─────────────────────────────────────────────── */
+
+.health-bar {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.25rem 0 0.5rem;
+    font-size: 0.75rem;
+    color: var(--pico-muted-color);
+    border-bottom: 1px solid var(--pico-muted-border-color);
+    margin-bottom: 1rem;
+}
+
+.health-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: default;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.health-item:hover {
+    background-color: var(--pico-card-background-color);
+}
+
+/* Status indicator dots */
+.health-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--pico-muted-color);
+    flex-shrink: 0;
+}
+
+.health-dot.running {
+    background-color: #2ecc40;
+}
+
+.health-dot.stopped {
+    background-color: #aaa;
+}
+
+.health-dot.error {
+    background-color: #ff4136;
+}
+
+.health-dot.unknown {
+    background-color: #ff851b;
+}
+
+.health-dot.warning {
+    background-color: #ff851b;
+}
+
+/* Warning state for disk usage */
+.health-item.warning {
+    color: #e65100;
+    font-weight: 600;
+}
+
+/* Daemon state text colors */
+.health-item.running {
+    color: #2ecc40;
+}
+
+.health-item.stopped {
+    color: var(--pico-muted-color);
+}
+
+.health-item.error {
+    color: #ff4136;
+}
+
+/* ── Health Popup (hover detail) ────────────────────────────── */
+
+.health-popup {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    min-width: 200px;
+    padding: 0.75rem 1rem;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--pico-color);
+    background: var(--pico-card-background-color);
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+}
+
+.health-item:hover .health-popup {
+    display: block;
+}
+
+.popup-warning {
+    color: #e65100;
+    font-weight: 600;
+}
+
+/* ── Filmstrip (placeholder for Plan 03) ────────────────────── */
+
+.filmstrip {
+    display: flex;
+    overflow-x: auto;
+    gap: 4px;
+    padding: 8px 0;
+    margin-bottom: 1rem;
+    scrollbar-width: thin;
+}
+
+.filmstrip::-webkit-scrollbar {
+    height: 6px;
+}
+
+.filmstrip::-webkit-scrollbar-thumb {
+    background: var(--pico-muted-border-color);
+    border-radius: 3px;
+}
+
+/* Thumbnail styles */
+.thumb {
+    height: 120px;
+    width: auto;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    transition: border-color 0.15s ease, opacity 0.15s ease;
+    flex-shrink: 0;
+}
+
+.thumb:hover {
+    border-color: var(--pico-primary-hover);
+    opacity: 0.85;
+}
+
+.thumb.selected {
+    border-color: var(--pico-primary);
+    box-shadow: 0 0 0 2px var(--pico-primary-focus);
+}
+
+/* ── Main Image Container ───────────────────────────────────── */
+
+.main-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem 0;
+}
+
+.main-image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Layout ─────────────────────────────────────────────────── */
+
+/* Desktop-first: comfortable container width */
+body > header.container,
+body > main.container {
+    max-width: 1200px;
+}
+
+/* Tab active refinement: Pico handles aria-current, but ensure
+   the active tab has a clear visual distinction */
+nav a[aria-current="page"] {
+    font-weight: 600;
+}
