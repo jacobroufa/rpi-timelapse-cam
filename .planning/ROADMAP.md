@@ -36,20 +36,23 @@ Plans:
 - [ ] 01-03-PLAN.md -- Capture daemon loop, CLI entry point, status reporting, systemd service, setup script
 
 ### Phase 2: Web UI & Timeline Browser
-**Goal**: Users can browse captured images, see a live camera feed, and monitor system health from any device on the local network
+**Goal**: Users can browse captured images, see the latest capture, and monitor system health from any device on the local network
 **Depends on**: Phase 1
 **Requirements**: WEB-01, WEB-02, WEB-03, WEB-04, WEB-05, WEB-06, WEB-07, WEB-08, WEB-09
 **Success Criteria** (what must be TRUE):
-  1. User can open the web UI in a browser and switch between Timeline and Live View tabs
-  2. Live View tab shows an auto-refreshing still image from the camera without storing additional files
-  3. Timeline tab displays a scrollable horizontal strip of thumbnail images with a date picker to jump to specific days
+  1. User can open the web UI in a browser and switch between Timeline, Latest Image, and Control tabs
+  2. Latest Image tab shows an auto-refreshing still image from the most recent capture
+  3. Timeline tab displays a scrollable horizontal filmstrip of thumbnail images with keyboard navigation and a date picker to jump to specific days
   4. Web UI shows a disk space warning when free storage drops below the configured threshold and displays capture daemon status with last capture time
-  5. User can start and stop the capture daemon from the web UI
-**Plans**: TBD
+  5. User can start and stop the capture daemon from the PAM-authenticated Control tab
+**Plans**: 5 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- Thumbnail generation module, daemon integration, backfill CLI command
+- [ ] 02-02-PLAN.md -- Flask app factory, base template with tabs and health indicators, Pico CSS styling
+- [ ] 02-03-PLAN.md -- Timeline tab with filmstrip, keyboard navigation, date picker, image serving API
+- [ ] 02-04-PLAN.md -- Latest Image tab with auto-refresh and systemd web service
+- [ ] 02-05-PLAN.md -- Control tab with PAM authentication, daemon start/stop, system health dashboard
 
 ### Phase 3: Timelapse Generation
 **Goal**: Users can turn any date range of captured images into a timelapse video with a single command
@@ -72,5 +75,5 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Capture Daemon & Storage Management | 0/3 | Complete    | 2026-02-16 |
-| 2. Web UI & Timeline Browser | 0/? | Not started | - |
+| 2. Web UI & Timeline Browser | 0/5 | Not started | - |
 | 3. Timelapse Generation | 0/? | Not started | - |
