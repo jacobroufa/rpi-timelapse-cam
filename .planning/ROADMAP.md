@@ -62,10 +62,10 @@ Plans:
   1. User can run a standalone script with a date range and output duration to generate a timelapse video
   2. By default, one week of captures compresses into a 2-minute video with the correct calculated framerate
   3. Script runs on the Pi or any machine where the images and FFmpeg are available, with no dependency on the capture daemon or web server
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md -- Core timelapse generation module and CLI subcommand with FFmpeg concat demuxer
 
 ## Progress
 
@@ -76,4 +76,4 @@ Phases execute in numeric order: 1 -> 2 -> 3
 |-------|----------------|--------|-----------|
 | 1. Capture Daemon & Storage Management | 0/3 | Complete    | 2026-02-16 |
 | 2. Web UI & Timeline Browser | 0/5 | Not started | - |
-| 3. Timelapse Generation | 0/? | Not started | - |
+| 3. Timelapse Generation | 0/1 | Not started | - |
