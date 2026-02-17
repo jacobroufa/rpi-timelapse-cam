@@ -166,6 +166,56 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* ── Latest Image Tab ──────────────────────────────────────── */
+
+.status-banner {
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    background-color: var(--pico-muted-border-color);
+    color: var(--pico-muted-color);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.latest-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem 0;
+}
+
+.latest-image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.image-timestamp {
+    position: absolute;
+    bottom: 1.25rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+}
+
+.latest-info-bar {
+    text-align: center;
+    color: var(--pico-muted-color);
+    margin-bottom: 1rem;
+}
+
+.no-images-message {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--pico-muted-color);
+}
+
 /* ── Layout ─────────────────────────────────────────────────── */
 
 /* Desktop-first: comfortable container width */

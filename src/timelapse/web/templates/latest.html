@@ -4,5 +4,27 @@
 
 {% block content %}
 <h2>Latest Image</h2>
-<p>Latest Image view coming soon...</p>
+
+<div id="status-banner" class="status-banner" style="display: none;">
+    <span id="status-message"></span>
+</div>
+
+<div class="latest-image-container" {% if not has_image %}style="display: none;"{% endif %}>
+    <img id="latest-image" src="{{ url_for('latest.latest_image') }}" alt="Latest capture">
+    <span id="capture-timestamp" class="image-timestamp">{{ health.last_capture or 'No captures yet' }}</span>
+</div>
+
+<div id="no-images-message" class="no-images-message" {% if has_image %}style="display: none;"{% endif %}>
+    <p>No images captured yet. Start the capture daemon to begin.</p>
+</div>
+
+<div class="latest-info-bar">
+    <small>Refreshes every {{ capture_interval }} seconds</small>
+</div>
+
+<div id="latest-config" data-interval="{{ capture_interval }}"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/latest.js') }}"></script>
 {% endblock %}
