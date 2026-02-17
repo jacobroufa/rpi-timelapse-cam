@@ -22,6 +22,10 @@ DEFAULTS = {
     "logging": {
         "gap_tracking": False,
     },
+    "web": {
+        "port": 8080,
+        "host": "0.0.0.0",
+    },
 }
 
 

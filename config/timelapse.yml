@@ -45,3 +45,10 @@
 #   # Track and log missed/failed captures (default: false)
 #   # When false, failed captures are skipped silently
 #   gap_tracking: false
+
+# Web server settings
+# web:
+#   # Port to listen on (default: 8080)
+#   port: 8080
+#   # Host to bind to (default: 0.0.0.0 for all interfaces)
+#   host: "0.0.0.0"
