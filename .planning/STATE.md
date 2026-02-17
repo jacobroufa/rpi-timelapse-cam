@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 2 of 3 (Web UI & Timeline Browser)
-Plan: 2 of 5 in current phase
-Status: Plan 02-02 complete, continuing phase
-Last activity: 2026-02-17 -- Completed 02-02-PLAN.md (Flask App Skeleton)
+Plan: 5 of 5 in current phase
+Status: Phase 02 complete, all plans executed
+Last activity: 2026-02-17 -- Completed 02-05-PLAN.md (Control Panel)
 
-Progress: [################------] 62%
+Progress: [######################] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 8
 - Average duration: 3min
-- Total execution time: 0.25 hours
+- Total execution time: 0.45 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-capture-daemon-storage-management | 3/3 | 10min | 3min |
-| 02-web-ui-timeline-browser | 2/5 | 6min | 3min |
+| 02-web-ui-timeline-browser | 5/5 | 18min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (3min), 01-03 (5min), 02-01 (2min), 02-02 (4min)
+- Last 5 plans: 02-01 (2min), 02-02 (4min), 02-03 (4min), 02-04 (4min), 02-05 (4min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -65,6 +65,10 @@ Recent decisions affecting current work:
 - Health indicators use hover popups for rich detail display
 - Web config defaults: port 8080, host 0.0.0.0
 - Context processor injects health dict into all templates
+- HTTP Basic Auth against PAM for control tab -- browser caches credentials per session
+- Full /usr/bin/systemctl path in subprocess calls to match sudoers config
+- Dedicated Start/Stop buttons with confirm() on Stop only
+- 5-second polling interval for control tab status updates
 
 ### Pending Todos
 
@@ -77,5 +81,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 02-02-PLAN.md
-Resume file: .planning/phases/02-web-ui-timeline-browser/02-02-SUMMARY.md
+Stopped at: Completed 02-05-PLAN.md (Phase 02 complete)
+Resume file: .planning/phases/02-web-ui-timeline-browser/02-05-SUMMARY.md
