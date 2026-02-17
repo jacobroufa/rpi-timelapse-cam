@@ -17,6 +17,7 @@ from timelapse.config import load_config
 from timelapse.lock import camera_lock
 from timelapse.status import write_status
 from timelapse.storage import StorageManager, cleanup_old_days
+from timelapse.web.thumbnails import generate_thumbnail
 
 logger = logging.getLogger("timelapse.daemon")
 
@@ -153,6 +154,12 @@ class CaptureDaemon:
                 self._consecutive_failures = 0
                 self._captures_today += 1
                 self._last_capture_success = True
+
+                # Generate thumbnail (failure must never break capture loop)
+                try:
+                    generate_thumbnail(output_path)
+                except Exception as exc:
+                    logger.warning("Thumbnail generation failed for %s: %s", output_path, exc)
 
                 if self._config["logging"].get("gap_tracking", False):
                     logger.info("Capture saved: %s", output_path)
