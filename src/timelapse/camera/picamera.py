@@ -41,6 +41,11 @@ class PiCameraBackend(CameraBackend):
         self._camera.start()
         # Allow auto-exposure and auto-white-balance to settle
         time.sleep(2)
+        # Warmup capture: the first capture_image() after start() can block
+        # for 10-30s while the sensor pipeline fully initializes. Doing a
+        # discard capture here ensures the main loop captures are fast.
+        logger.debug("Running warmup capture...")
+        self._camera.capture_image("main")
         logger.info(
             "Pi Camera opened at %dx%d",
             self._resolution[0],

@@ -8,6 +8,9 @@ Description=Timelapse Capture Daemon
 # Pi has no RTC -- must wait for NTP sync to get correct timestamps
 After=time-sync.target
 Wants=time-sync.target
+# Max 5 restarts in 5 minutes to prevent restart storms
+StartLimitBurst=5
+StartLimitIntervalSec=300
 
 [Service]
 Type=simple
@@ -19,9 +22,6 @@ ExecStart=/home/pi/rpi-timelapse-cam/venv/bin/python -m timelapse --config /home
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=5
-# Max 5 restarts in 5 minutes to prevent restart storms
-StartLimitBurst=5
-StartLimitIntervalSec=300
 # Ensure Python output reaches journal immediately
 Environment=PYTHONUNBUFFERED=1
 StandardOutput=journal

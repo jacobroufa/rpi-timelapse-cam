@@ -8,6 +8,9 @@
 Description=Timelapse Web UI
 # Start after network and capture daemon (so status file exists)
 After=network.target timelapse-capture.service
+# Max 5 restarts in 5 minutes to prevent restart storms
+StartLimitBurst=5
+StartLimitIntervalSec=300
 
 [Service]
 Type=simple
@@ -20,9 +23,6 @@ ExecStart=/home/pi/rpi-timelapse-cam/venv/bin/python -m flask --app timelapse.we
 WorkingDirectory=/home/pi/rpi-timelapse-cam
 Restart=on-failure
 RestartSec=5
-# Max 5 restarts in 5 minutes to prevent restart storms
-StartLimitBurst=5
-StartLimitIntervalSec=300
 # Ensure Python output reaches journal immediately; set Flask app target
 Environment=PYTHONUNBUFFERED=1 FLASK_APP=timelapse.web
 StandardOutput=journal
