@@ -78,7 +78,33 @@ else
 fi
 
 # Install Python dependencies inside venv
-"$VENV_DIR/bin/pip" install --quiet pyyaml flask pillow python-pam flask-httpauth
+# Python/pip resolves pypi.org via getaddrinfo, which by default prefers IPv4
+# (per /etc/gai.conf on Debian/Pi OS). If IPv4 is unreachable but IPv6 works,
+# pip will hang waiting on the IPv4 connection attempt. Detect this and prefer
+# IPv6 by temporarily adjusting gai.conf.
+if curl -4 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
+    echo "  IPv4 connectivity OK"
+    "$VENV_DIR/bin/pip" install --quiet --timeout 60 --retries 3 pyyaml flask pillow python-pam flask-httpauth
+elif curl -6 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
+    echo "  IPv4 unreachable, IPv6 OK — configuring pip to prefer IPv6"
+    # Temporarily prepend IPv6 preference to gai.conf so getaddrinfo returns
+    # AAAA records first. Restored after pip finishes (trap handles set -e).
+    GAI_CONF="/etc/gai.conf"
+    GAI_MARKER="# rpi-timelapse-setup: prefer-ipv6"
+    if ! grep -q "$GAI_MARKER" "$GAI_CONF" 2>/dev/null; then
+        sudo cp "$GAI_CONF" "${GAI_CONF}.bak" 2>/dev/null || true
+        echo -e "$GAI_MARKER\nprecedence ::0/0  100" | sudo tee -a "$GAI_CONF" > /dev/null
+        trap 'sudo mv -f "${GAI_CONF}.bak" "$GAI_CONF" 2>/dev/null || true' EXIT
+    fi
+    "$VENV_DIR/bin/pip" install --quiet --timeout 60 --retries 3 pyyaml flask pillow python-pam flask-httpauth
+    # Restore original gai.conf
+    sudo mv -f "${GAI_CONF}.bak" "$GAI_CONF" 2>/dev/null || true
+    trap - EXIT
+else
+    echo "ERROR: Cannot reach pypi.org over IPv4 or IPv6."
+    echo "  Check your network connection and try again."
+    exit 1
+fi
 echo "  Python dependencies installed"
 echo ""
 
