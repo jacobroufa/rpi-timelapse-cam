@@ -78,71 +78,51 @@ else
 fi
 
 # Install Python dependencies inside venv
-# pip uses Python's getaddrinfo() which returns both A (IPv4) and AAAA (IPv6)
-# records. urllib3 tries them sequentially - if the preferred protocol has no
-# working route, pip hangs until that attempt times out. The gai.conf
-# precedence trick only reorders results; urllib3 still tries all of them.
-# Fix: when one protocol is broken, force DNS resolution via /etc/hosts so
-# getaddrinfo() only returns addresses for the working protocol.
-PIP_HOSTS_MARKER="# rpi-timelapse-setup"
-PIP_HOSTS="pypi.org files.pythonhosted.org"
+# The default MTU of 1500 can be too large for some network paths (PPPoE,
+# VPN, or routers that drop ICMP "fragmentation needed" packets). TCP
+# connects fine with small SYN packets, but TLS handshakes fail because
+# the larger ServerHello+Certificate packets are silently dropped.
+# Detect this by attempting a TLS handshake and reduce MTU if it fails.
+NET_IFACE=$(ip route show default | awk '{print $5; exit}')
+ORIGINAL_MTU=$(ip link show "$NET_IFACE" | awk '/mtu/{for(i=1;i<=NF;i++) if($i=="mtu") print $(i+1)}')
+MTU_REDUCED=""
 
-pip_install_deps() {
-    # Upgrade pip first so its vendored urllib3 is current. The system
-    # urllib3 (inherited via --system-site-packages) can be outdated and
-    # cause SSL: UNEXPECTED_EOF_WHILE_READING errors during downloads.
-    "$VENV_DIR/bin/pip" install --quiet --timeout 60 --retries 3 --upgrade pip
-    "$VENV_DIR/bin/pip" install --timeout 60 --retries 3 --prefer-binary --no-cache-dir \
-        pyyaml flask pillow python-pam flask-httpauth
+tls_test() {
+    "$VENV_DIR/bin/python3" -c "
+import ssl, socket
+ctx = ssl.create_default_context()
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.settimeout(5)
+s.connect(('pypi.org', 443))
+ss = ctx.wrap_socket(s, server_hostname='pypi.org')
+ss.close()
+" 2>/dev/null
 }
 
-force_hosts_ipv6() {
-    # Pin pypi hosts to their IPv6 addresses in /etc/hosts so getaddrinfo()
-    # never returns an IPv4 address that pip would hang trying to reach.
-    for host in $PIP_HOSTS; do
-        ipv6=$(python3 -c "import socket; r=socket.getaddrinfo('$host',443,socket.AF_INET6); print(r[0][4][0])" 2>/dev/null)
-        if [ -n "$ipv6" ]; then
-            echo "$ipv6 $host $PIP_HOSTS_MARKER" | sudo tee -a /etc/hosts > /dev/null
-        fi
-    done
-}
-
-force_hosts_ipv4() {
-    # Pin pypi hosts to their IPv4 addresses in /etc/hosts so getaddrinfo()
-    # never returns an IPv6 address that pip would hang trying to reach.
-    for host in $PIP_HOSTS; do
-        ipv4=$(python3 -c "import socket; r=socket.getaddrinfo('$host',443,socket.AF_INET); print(r[0][4][0])" 2>/dev/null)
-        if [ -n "$ipv4" ]; then
-            echo "$ipv4 $host $PIP_HOSTS_MARKER" | sudo tee -a /etc/hosts > /dev/null
-        fi
-    done
-}
-
-cleanup_hosts() {
-    sudo sed -i "/$PIP_HOSTS_MARKER/d" /etc/hosts 2>/dev/null || true
-}
-trap cleanup_hosts EXIT
-
-if curl -4 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
-    if curl -6 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
-        echo "  IPv4 and IPv6 connectivity OK"
-    else
-        echo "  IPv4 OK, IPv6 unreachable - pinning pip to IPv4"
-        force_hosts_ipv4
+if ! tls_test; then
+    echo "  TLS handshake failed at MTU $ORIGINAL_MTU - reducing MTU to 1200"
+    sudo ip link set "$NET_IFACE" mtu 1200
+    MTU_REDUCED="1"
+    if ! tls_test; then
+        echo "ERROR: TLS handshake to pypi.org still fails at MTU 1200."
+        echo "  Check your network connection and try again."
+        sudo ip link set "$NET_IFACE" mtu "$ORIGINAL_MTU"
+        exit 1
     fi
-    pip_install_deps
-elif curl -6 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
-    echo "  IPv4 unreachable, IPv6 OK - pinning pip to IPv6"
-    force_hosts_ipv6
-    pip_install_deps
-else
-    echo "ERROR: Cannot reach pypi.org over IPv4 or IPv6."
-    echo "  Check your network connection and try again."
-    exit 1
+    echo "  TLS handshake OK at MTU 1200"
 fi
 
-cleanup_hosts
-trap - EXIT
+# --break-system-packages: the venv uses --system-site-packages for
+# picamera2/cv2 access, which can trigger PEP 668 on Pi OS Bookworm+.
+"$VENV_DIR/bin/pip" install --break-system-packages \
+    --timeout 60 --retries 3 --prefer-binary --no-cache-dir \
+    pyyaml flask pillow python-pam flask-httpauth
+
+# Restore original MTU if we changed it
+if [ "$MTU_REDUCED" = "1" ]; then
+    sudo ip link set "$NET_IFACE" mtu "$ORIGINAL_MTU"
+    echo "  Restored MTU to $ORIGINAL_MTU"
+fi
 echo "  Python dependencies installed"
 echo ""
 
