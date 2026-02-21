@@ -88,7 +88,11 @@ PIP_HOSTS_MARKER="# rpi-timelapse-setup"
 PIP_HOSTS="pypi.org files.pythonhosted.org"
 
 pip_install_deps() {
-    "$VENV_DIR/bin/pip" install --quiet --timeout 60 --retries 3 \
+    # Upgrade pip first so its vendored urllib3 is current. The system
+    # urllib3 (inherited via --system-site-packages) can be outdated and
+    # cause SSL: UNEXPECTED_EOF_WHILE_READING errors during downloads.
+    "$VENV_DIR/bin/pip" install --quiet --timeout 60 --retries 3 --upgrade pip
+    "$VENV_DIR/bin/pip" install --timeout 60 --retries 3 --prefer-binary --no-cache-dir \
         pyyaml flask pillow python-pam flask-httpauth
 }
 
