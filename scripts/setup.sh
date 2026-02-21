@@ -78,33 +78,67 @@ else
 fi
 
 # Install Python dependencies inside venv
-# Python/pip resolves pypi.org via getaddrinfo, which by default prefers IPv4
-# (per /etc/gai.conf on Debian/Pi OS). If IPv4 is unreachable but IPv6 works,
-# pip will hang waiting on the IPv4 connection attempt. Detect this and prefer
-# IPv6 by temporarily adjusting gai.conf.
+# pip uses Python's getaddrinfo() which returns both A (IPv4) and AAAA (IPv6)
+# records. urllib3 tries them sequentially — if the preferred protocol has no
+# working route, pip hangs until that attempt times out. The gai.conf
+# precedence trick only reorders results; urllib3 still tries all of them.
+# Fix: when one protocol is broken, force DNS resolution via /etc/hosts so
+# getaddrinfo() only returns addresses for the working protocol.
+PIP_HOSTS_MARKER="# rpi-timelapse-setup"
+PIP_HOSTS="pypi.org files.pythonhosted.org"
+
+pip_install_deps() {
+    "$VENV_DIR/bin/pip" install --quiet --timeout 60 --retries 3 \
+        pyyaml flask pillow python-pam flask-httpauth
+}
+
+force_hosts_ipv6() {
+    # Pin pypi hosts to their IPv6 addresses in /etc/hosts so getaddrinfo()
+    # never returns an IPv4 address that pip would hang trying to reach.
+    for host in $PIP_HOSTS; do
+        ipv6=$(python3 -c "import socket; r=socket.getaddrinfo('$host',443,socket.AF_INET6); print(r[0][4][0])" 2>/dev/null)
+        if [ -n "$ipv6" ]; then
+            echo "$ipv6 $host $PIP_HOSTS_MARKER" | sudo tee -a /etc/hosts > /dev/null
+        fi
+    done
+}
+
+force_hosts_ipv4() {
+    # Pin pypi hosts to their IPv4 addresses in /etc/hosts so getaddrinfo()
+    # never returns an IPv6 address that pip would hang trying to reach.
+    for host in $PIP_HOSTS; do
+        ipv4=$(python3 -c "import socket; r=socket.getaddrinfo('$host',443,socket.AF_INET); print(r[0][4][0])" 2>/dev/null)
+        if [ -n "$ipv4" ]; then
+            echo "$ipv4 $host $PIP_HOSTS_MARKER" | sudo tee -a /etc/hosts > /dev/null
+        fi
+    done
+}
+
+cleanup_hosts() {
+    sudo sed -i "/$PIP_HOSTS_MARKER/d" /etc/hosts 2>/dev/null || true
+}
+trap cleanup_hosts EXIT
+
 if curl -4 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
-    echo "  IPv4 connectivity OK"
-    "$VENV_DIR/bin/pip" install --quiet --timeout 60 --retries 3 pyyaml flask pillow python-pam flask-httpauth
-elif curl -6 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
-    echo "  IPv4 unreachable, IPv6 OK — configuring pip to prefer IPv6"
-    # Temporarily prepend IPv6 preference to gai.conf so getaddrinfo returns
-    # AAAA records first. Restored after pip finishes (trap handles set -e).
-    GAI_CONF="/etc/gai.conf"
-    GAI_MARKER="# rpi-timelapse-setup: prefer-ipv6"
-    if ! grep -q "$GAI_MARKER" "$GAI_CONF" 2>/dev/null; then
-        sudo cp "$GAI_CONF" "${GAI_CONF}.bak" 2>/dev/null || true
-        echo -e "$GAI_MARKER\nprecedence ::0/0  100" | sudo tee -a "$GAI_CONF" > /dev/null
-        trap 'sudo mv -f "${GAI_CONF}.bak" "$GAI_CONF" 2>/dev/null || true' EXIT
+    if curl -6 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
+        echo "  IPv4 and IPv6 connectivity OK"
+    else
+        echo "  IPv4 OK, IPv6 unreachable — pinning pip to IPv4"
+        force_hosts_ipv4
     fi
-    "$VENV_DIR/bin/pip" install --quiet --timeout 60 --retries 3 pyyaml flask pillow python-pam flask-httpauth
-    # Restore original gai.conf
-    sudo mv -f "${GAI_CONF}.bak" "$GAI_CONF" 2>/dev/null || true
-    trap - EXIT
+    pip_install_deps
+elif curl -6 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
+    echo "  IPv4 unreachable, IPv6 OK — pinning pip to IPv6"
+    force_hosts_ipv6
+    pip_install_deps
 else
     echo "ERROR: Cannot reach pypi.org over IPv4 or IPv6."
     echo "  Check your network connection and try again."
     exit 1
 fi
+
+cleanup_hosts
+trap - EXIT
 echo "  Python dependencies installed"
 echo ""
 
