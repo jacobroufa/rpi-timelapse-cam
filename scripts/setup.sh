@@ -118,7 +118,7 @@ fi
 # picamera2/cv2 access, which can trigger PEP 668 on Pi OS Bookworm+.
 "$VENV_DIR/bin/pip" install --break-system-packages \
     --timeout 60 --retries 3 --prefer-binary --no-cache-dir \
-    pyyaml flask pillow python-pam flask-httpauth
+    pyyaml flask pillow python-pam six flask-httpauth
 
 # Install the project itself in editable mode so `python -m timelapse` works.
 # Editable install symlinks back to src/ -- code changes take effect immediately.
