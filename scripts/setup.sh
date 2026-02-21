@@ -79,7 +79,7 @@ fi
 
 # Install Python dependencies inside venv
 # pip uses Python's getaddrinfo() which returns both A (IPv4) and AAAA (IPv6)
-# records. urllib3 tries them sequentially — if the preferred protocol has no
+# records. urllib3 tries them sequentially - if the preferred protocol has no
 # working route, pip hangs until that attempt times out. The gai.conf
 # precedence trick only reorders results; urllib3 still tries all of them.
 # Fix: when one protocol is broken, force DNS resolution via /etc/hosts so
@@ -123,12 +123,12 @@ if curl -4 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
     if curl -6 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
         echo "  IPv4 and IPv6 connectivity OK"
     else
-        echo "  IPv4 OK, IPv6 unreachable — pinning pip to IPv4"
+        echo "  IPv4 OK, IPv6 unreachable - pinning pip to IPv4"
         force_hosts_ipv4
     fi
     pip_install_deps
 elif curl -6 --max-time 5 -sI https://pypi.org >/dev/null 2>&1; then
-    echo "  IPv4 unreachable, IPv6 OK — pinning pip to IPv6"
+    echo "  IPv4 unreachable, IPv6 OK - pinning pip to IPv6"
     force_hosts_ipv6
     pip_install_deps
 else
