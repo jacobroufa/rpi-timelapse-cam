@@ -14,8 +14,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 VENV_DIR="$PROJECT_DIR/venv"
-CONFIG_DEST="$HOME/timelapse-config.yml"
-OUTPUT_DIR="$HOME/timelapse-images"
+RUN_USER="${SUDO_USER:-$USER}"
+RUN_HOME=$(eval echo "~$RUN_USER")
+CONFIG_DEST="$RUN_HOME/timelapse-config.yml"
+OUTPUT_DIR="$RUN_HOME/timelapse-images"
 
 echo ""
 echo "============================================================"
@@ -153,10 +155,20 @@ echo ""
 # ----------------------------------------------------------
 
 echo "Installing systemd services..."
-sudo cp "$PROJECT_DIR/systemd/timelapse-capture.service" /etc/systemd/system/
-sudo cp "$PROJECT_DIR/systemd/timelapse-web.service" /etc/systemd/system/
+# Template the service units with the actual username and project path.
+# The shipped .service files use 'pi' and '/home/pi/...' as defaults.
+sed -e "s|User=pi|User=$RUN_USER|g" \
+    -e "s|Group=pi|Group=$RUN_USER|g" \
+    -e "s|/home/pi/rpi-timelapse-cam|$PROJECT_DIR|g" \
+    -e "s|/home/pi/timelapse-config.yml|$CONFIG_DEST|g" \
+    "$PROJECT_DIR/systemd/timelapse-capture.service" | sudo tee /etc/systemd/system/timelapse-capture.service > /dev/null
+sed -e "s|User=pi|User=$RUN_USER|g" \
+    -e "s|Group=pi|Group=$RUN_USER|g" \
+    -e "s|/home/pi/rpi-timelapse-cam|$PROJECT_DIR|g" \
+    -e "s|/home/pi/timelapse-config.yml|$CONFIG_DEST|g" \
+    "$PROJECT_DIR/systemd/timelapse-web.service" | sudo tee /etc/systemd/system/timelapse-web.service > /dev/null
 sudo systemctl daemon-reload
-echo "  Services installed and daemon reloaded"
+echo "  Services installed for user $RUN_USER and daemon reloaded"
 echo ""
 
 # ----------------------------------------------------------
@@ -167,9 +179,9 @@ echo ""
 
 echo "Setting up sudoers for web UI..."
 SUDOERS_FILE="/etc/sudoers.d/timelapse-web"
-SUDOERS_CONTENT="pi ALL=(root) NOPASSWD: /usr/bin/systemctl start timelapse-capture
-pi ALL=(root) NOPASSWD: /usr/bin/systemctl stop timelapse-capture
-pi ALL=(root) NOPASSWD: /usr/bin/systemctl is-active timelapse-capture"
+SUDOERS_CONTENT="$RUN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl start timelapse-capture
+$RUN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl stop timelapse-capture
+$RUN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl is-active timelapse-capture"
 
 echo "$SUDOERS_CONTENT" | sudo tee "$SUDOERS_FILE" > /dev/null
 sudo chmod 0440 "$SUDOERS_FILE"
@@ -189,8 +201,8 @@ echo ""
 # ----------------------------------------------------------
 
 echo "Setting up PAM authentication..."
-sudo usermod -aG shadow pi
-echo "  Added pi user to shadow group for PAM auth"
+sudo usermod -aG shadow "$RUN_USER"
+echo "  Added $RUN_USER to shadow group for PAM auth"
 echo ""
 
 # ----------------------------------------------------------
